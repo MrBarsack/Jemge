@@ -17,8 +17,11 @@
 package com.jemge.j2d;
 
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Default object for drawing textures.
@@ -28,6 +31,32 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class JSprite extends Sprite implements RendererObject {
     private boolean transparent;
+
+    public JSprite() {
+    }
+
+    public JSprite(Texture texture) {
+        super(texture);
+    }
+
+    public JSprite(Texture texture, float width, float height) {
+        super(texture);
+        setSize(width, height);
+    }
+
+    public JSprite(Texture texture, float x, float y, float width, float height) {
+        super(texture);
+        setBounds(x, y, width, height);
+
+    }
+
+    public JSprite(TextureRegion region) {
+        super(region);
+    }
+
+    public JSprite(JSprite sprite) {
+        super(sprite);
+    }
 
     /**
      * @return Is this bsprite transparent?
@@ -49,11 +78,18 @@ public class JSprite extends Sprite implements RendererObject {
         super.draw(spriteBatch);
     }
 
+    @Override
+    public Rectangle getRectangle() {
+        return getBoundingRectangle();
+    }
+
     /**
      * Dispose the native
      */
-
+    @Override
     public void dispose() {
+        if (getTexture() == null) return;
+
         getTexture().dispose();
     }
 
