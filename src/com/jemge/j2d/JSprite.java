@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.jemge.core.Jemge;
 
 /**
  * Default object for drawing textures.
@@ -30,6 +32,8 @@ import com.badlogic.gdx.math.Rectangle;
  */
 
 public class JSprite extends Sprite implements RendererObject {
+
+    //Private
     private boolean transparent;
 
     public JSprite() {
@@ -74,13 +78,10 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
+        if (needRender(getBoundingRectangle())) {
+            super.draw(spriteBatch);
+        }
 
-        super.draw(spriteBatch);
-    }
-
-    @Override
-    public Rectangle getRectangle() {
-        return getBoundingRectangle();
     }
 
     /**
@@ -93,5 +94,33 @@ public class JSprite extends Sprite implements RendererObject {
         getTexture().dispose();
     }
 
+    private boolean needRender(Rectangle rectangle) {
+        if (rectangle.height == rectangle.width) {
+            return Jemge.renderer2D.getCamera().frustum.sphereInFrustum(new Vector3(rectangle.x, rectangle.y, 0), rectangle.width);
+        }
+
+        Vector3 point;
+        //Bottom left
+
+        point = new Vector3(rectangle.x - rectangle.width / 2, rectangle.y - rectangle.height / 2, 0);
+        if (Jemge.renderer2D.getCamera().frustum.pointInFrustum(point)) return true;
+
+        //Top left
+        point.set(rectangle.x - rectangle.width / 2, rectangle.y + rectangle.height / 2, 0);
+        if (Jemge.renderer2D.getCamera().frustum.pointInFrustum(point)) return true;
+
+        //Bottom Right
+
+        point.set(rectangle.x + rectangle.width / 2, rectangle.y - rectangle.height / 2, 0);
+        if (Jemge.renderer2D.getCamera().frustum.pointInFrustum(point)) return true;
+
+        //Top Right
+
+        point.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2, 0);
+        if (Jemge.renderer2D.getCamera().frustum.pointInFrustum(point)) return true;
+
+        //Not inside the camera view == don't have to render it.
+        return false;
+    }
 
 }
