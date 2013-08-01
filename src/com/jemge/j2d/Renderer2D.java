@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
@@ -38,6 +39,10 @@ public class Renderer2D implements Disposable {
 
     private RenderMode renderMode;
 
+    //Protected
+
+    protected Rectangle cameraView;
+
 
     public enum RenderMode {
 
@@ -51,6 +56,8 @@ public class Renderer2D implements Disposable {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        cameraView = new Rectangle(0,0,camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
     }
@@ -85,6 +92,7 @@ public class Renderer2D implements Disposable {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
+        cameraView.set(camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
 
 
         spriteBatch.setProjectionMatrix(camera.combined);
