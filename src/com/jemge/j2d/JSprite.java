@@ -63,7 +63,7 @@ public class JSprite extends Sprite implements RendererObject {
     }
 
     /**
-     * @return Is this bsprite transparent?
+     * @return Is this jsprite transparent?
      */
 
     @Override
@@ -73,7 +73,7 @@ public class JSprite extends Sprite implements RendererObject {
 
 
     /**
-     * Render this bsprite
+     * Render this jsprite
      */
 
     @Override
