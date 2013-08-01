@@ -57,7 +57,7 @@ public class Renderer2D implements Disposable {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        cameraView = new Rectangle(0,0,camera.viewportWidth, camera.viewportHeight);
+        cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
     }

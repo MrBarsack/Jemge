@@ -76,7 +76,7 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-       if (needRender()) {
+        if (needRender()) {
             super.draw(spriteBatch);
         }
 
@@ -92,8 +92,7 @@ public class JSprite extends Sprite implements RendererObject {
         getTexture().dispose();
     }
 
-    private boolean needRender()
-    {
+    private boolean needRender() {
         //Inside the camera view?
         return Jemge.renderer2D.cameraView.overlaps(getBoundingRectangle());
     }
