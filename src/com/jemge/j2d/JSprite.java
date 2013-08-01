@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
+import com.jemge.core.Jemge;
 
 /**
  * Default object for drawing textures.
@@ -30,6 +30,8 @@ import com.badlogic.gdx.math.Rectangle;
  */
 
 public class JSprite extends Sprite implements RendererObject {
+
+    //Private
     private boolean transparent;
 
     public JSprite() {
@@ -59,7 +61,7 @@ public class JSprite extends Sprite implements RendererObject {
     }
 
     /**
-     * @return Is this bsprite transparent?
+     * @return Is this jsprite transparent?
      */
 
     @Override
@@ -69,18 +71,15 @@ public class JSprite extends Sprite implements RendererObject {
 
 
     /**
-     * Render this bsprite
+     * Render this jsprite
      */
 
     @Override
     public void render(SpriteBatch spriteBatch) {
+        if (needRender()) {
+            super.draw(spriteBatch);
+        }
 
-        super.draw(spriteBatch);
-    }
-
-    @Override
-    public Rectangle getRectangle() {
-        return getBoundingRectangle();
     }
 
     /**
@@ -93,5 +92,9 @@ public class JSprite extends Sprite implements RendererObject {
         getTexture().dispose();
     }
 
+    private boolean needRender() {
+        //Inside the camera view?
+        return Jemge.renderer2D.cameraView.overlaps(getBoundingRectangle());
+    }
 
 }

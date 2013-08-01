@@ -22,13 +22,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Renderer2D implements Disposable {
+
+    //Private
+
     private static Renderer2D renderer2D;
 
     private List<RendererObject> renderTargets;
@@ -36,6 +38,10 @@ public class Renderer2D implements Disposable {
     private OrthographicCamera camera;
 
     private RenderMode renderMode;
+
+    //Protected
+
+    protected Rectangle cameraView;
 
 
     public enum RenderMode {
@@ -50,6 +56,8 @@ public class Renderer2D implements Disposable {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
     }
@@ -84,16 +92,15 @@ public class Renderer2D implements Disposable {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
+        cameraView.set(camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
+
 
         spriteBatch.setProjectionMatrix(camera.combined);
-
         spriteBatch.begin();
 
         renderMode = RenderMode.INACTIVE;
 
         for (RendererObject rend : renderTargets) {
-
-            if(!needRender(rend.getRectangle())) continue;
 
             if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {
                 spriteBatch.enableBlending();
@@ -146,37 +153,5 @@ public class Renderer2D implements Disposable {
         return camera;
     }
 
-    //Private:
-
-    private boolean needRender(Rectangle rectangle)
-    {
-        if(rectangle.height == rectangle.width)
-        {
-            return camera.frustum.sphereInFrustum(new Vector3(rectangle.x,rectangle.y, 0), rectangle.width);
-        }
-
-        Vector3 point;
-        //Bottom left
-
-        point = new Vector3(rectangle.x - rectangle.width / 2, rectangle.y - rectangle.height / 2, 0);
-        if(camera.frustum.pointInFrustum(point)) return true;
-
-        //Top left
-        point.set(rectangle.x - rectangle.width / 2, rectangle.y + rectangle.height / 2, 0);
-        if(camera.frustum.pointInFrustum(point)) return true;
-
-        //Bottom Right
-
-        point.set(rectangle.x + rectangle.width / 2, rectangle.y - rectangle.height / 2, 0);
-        if(camera.frustum.pointInFrustum(point)) return true;
-
-        //Top Right
-
-        point.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2, 0);
-        if(camera.frustum.pointInFrustum(point)) return true;
-
-        //Not inside the camera view == don't have to render it.
-        return false;
-    }
 
 }

@@ -21,15 +21,12 @@ package com.jemge.j2d;
  */
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
 public interface RendererObject {
 
     public boolean hasTransparent();
 
     public void render(SpriteBatch spriteBatch);
-
-    public Rectangle getRectangle();
 
     public void dispose();
 
