@@ -27,6 +27,13 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  The renderer class. The rendering is done automatically, you just have to add the objects.
+ *
+ *  @author MrBarsack
+ *  @see RendererObject
+ */
+
 public class Renderer2D implements Disposable {
 
     //Private

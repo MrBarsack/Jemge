@@ -26,6 +26,7 @@ import com.jemge.core.Jemge;
 /**
  * Default object for drawing textures.
  *
+ * @author MrBarsack
  * @see RendererObject
  */
 

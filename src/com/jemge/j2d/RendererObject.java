@@ -18,6 +18,9 @@ package com.jemge.j2d;
 
 /**
  * The interface for everything the renderer can render.
+ *
+ * @author MrBarsack
+ * @see JSprite
  */
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
