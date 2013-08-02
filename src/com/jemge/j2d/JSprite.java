@@ -41,9 +41,9 @@ public class JSprite extends Sprite implements RendererObject {
         super(texture);
     }
 
-    public JSprite(Texture texture, float width, float height) {
+    public JSprite(Texture texture, float x, float y) {
         super(texture);
-        setSize(width, height);
+        setPosition(x, y);
     }
 
     public JSprite(Texture texture, float x, float y, float width, float height) {

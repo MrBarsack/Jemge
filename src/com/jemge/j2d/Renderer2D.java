@@ -94,7 +94,6 @@ public class Renderer2D implements Disposable {
         camera.update();
         cameraView.set(camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
 
-
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
@@ -108,7 +107,7 @@ public class Renderer2D implements Disposable {
                 renderMode = RenderMode.ENABLED;
             }
 
-            if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
+            else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
                 spriteBatch.disableBlending();
 
                 renderMode = RenderMode.DISABLED;
