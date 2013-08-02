@@ -21,6 +21,9 @@ import com.jemge.j2d.Renderer2D;
 
 /**
  * The core of the engine. Initializes the components of the engine and dispose them.
+ *
+ * @author MrBarsack
+ * @see Jemge
  */
 
 public class Engine {

@@ -21,6 +21,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Camera;
 import com.jemge.j2d.Renderer2D;
 
+/**
+ * Use this instead of {@link Game}. Calls the required functions of the engine.
+ * @author MrBarsack
+ */
 
 public class JGame extends Game {
     @Override
