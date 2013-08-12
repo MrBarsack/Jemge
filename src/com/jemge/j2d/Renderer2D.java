@@ -23,15 +23,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
+import com.jemge.j2d.renderer.CullingThread;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  The renderer class. The rendering is done automatically, you just have to add the objects.
+ * The renderer class. The rendering is done automatically, you just have to add the objects.
  *
- *  @author MrBarsack
- *  @see RendererObject
+ * @author MrBarsack
+ * @see RendererObject
  */
 
 public class Renderer2D implements Disposable {
@@ -49,6 +50,7 @@ public class Renderer2D implements Disposable {
     //Protected
 
     protected Rectangle cameraView;
+    protected CullingThread cullingThread;
 
 
     public enum RenderMode {
@@ -59,7 +61,10 @@ public class Renderer2D implements Disposable {
 
     public Renderer2D() {
         renderer2D = this;
+
         renderTargets = new ArrayList<RendererObject>();
+        cullingThread = new CullingThread(renderTargets);
+        cullingThread.start();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -112,9 +117,7 @@ public class Renderer2D implements Disposable {
                 spriteBatch.enableBlending();
 
                 renderMode = RenderMode.ENABLED;
-            }
-
-            else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
+            } else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
                 spriteBatch.disableBlending();
 
                 renderMode = RenderMode.DISABLED;
@@ -133,6 +136,7 @@ public class Renderer2D implements Disposable {
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        cullingThread.interrupt();
 
         for (RendererObject rend : renderTargets) {
             rend.dispose();
@@ -158,6 +162,5 @@ public class Renderer2D implements Disposable {
     public Camera getCamera() {
         return camera;
     }
-
 
 }

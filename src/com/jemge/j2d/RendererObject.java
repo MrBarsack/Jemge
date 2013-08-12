@@ -33,4 +33,8 @@ public interface RendererObject {
 
     public void dispose();
 
+    boolean needRender();
+
+    void setRenderCache(boolean cache);
+
 }

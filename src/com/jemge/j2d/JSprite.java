@@ -32,8 +32,7 @@ import com.jemge.core.Jemge;
 
 public class JSprite extends Sprite implements RendererObject {
 
-    //Private
-    private boolean transparent;
+    private boolean renderCache = true;
 
     public JSprite() {
     }
@@ -61,13 +60,19 @@ public class JSprite extends Sprite implements RendererObject {
         super(sprite);
     }
 
+    @Override
+    public void setRenderCache(boolean cache)
+    {
+        renderCache = cache;
+    }
+
     /**
      * @return Is this jsprite transparent?
      */
 
     @Override
     public boolean hasTransparent() {
-        return transparent;
+        return false;
     }
 
 
@@ -77,9 +82,9 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        if (needRender()) {
-            super.draw(spriteBatch);
-        }
+        if(!renderCache) return;
+
+         super.draw(spriteBatch);
 
     }
 
@@ -93,7 +98,8 @@ public class JSprite extends Sprite implements RendererObject {
         getTexture().dispose();
     }
 
-    private boolean needRender() {
+    @Override
+    public boolean needRender() {
         //Inside the camera view?
         return Jemge.renderer2D.cameraView.overlaps(getBoundingRectangle());
     }
