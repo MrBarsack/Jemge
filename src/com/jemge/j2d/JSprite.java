@@ -61,8 +61,7 @@ public class JSprite extends Sprite implements RendererObject {
     }
 
     @Override
-    public void setRenderCache(boolean cache)
-    {
+    public void setRenderCache(boolean cache) {
         renderCache = cache;
     }
 
@@ -82,9 +81,9 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        if(!renderCache) return;
+        if (!renderCache) return;
 
-         super.draw(spriteBatch);
+        super.draw(spriteBatch);
 
     }
 

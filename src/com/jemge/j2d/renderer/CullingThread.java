@@ -24,7 +24,6 @@ import java.util.List;
 public class CullingThread extends Thread implements Runnable {
 
     private List<RendererObject> renderList;
-    public boolean started;
 
     public CullingThread(List<RendererObject> rendererObjects) {
         renderList = rendererObjects;
@@ -34,13 +33,12 @@ public class CullingThread extends Thread implements Runnable {
 
     @Override
     public void run() {
-        started = true;
         while (!isInterrupted()) {
-            if (renderList != null) {
-                for (int render = 0; render < renderList.size(); render++) {
+            for (int render = 0; render < renderList.size(); render++) {
+                if (renderList.get(render) != null) {
                     renderList.get(render).setRenderCache(renderList.get(render).needRender());
-
                 }
+
             }
         }
     }

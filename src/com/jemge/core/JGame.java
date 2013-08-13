@@ -23,6 +23,7 @@ import com.jemge.j2d.Renderer2D;
 
 /**
  * Use this instead of {@link Game}. Calls the required functions of the engine.
+ *
  * @author MrBarsack
  */
 

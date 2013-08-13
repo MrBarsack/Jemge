@@ -19,8 +19,9 @@ package com.jemge.core;
 import com.jemge.j2d.Renderer2D;
 
 /**
- *  Static references to the {@link Engine} and {@link Renderer2D} instances.
- *  @author MrBarsack
+ * Static references to the {@link Engine} and {@link Renderer2D} instances.
+ *
+ * @author MrBarsack
  */
 
 public class Jemge {
