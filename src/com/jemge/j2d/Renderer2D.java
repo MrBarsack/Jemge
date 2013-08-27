@@ -37,6 +37,11 @@ import java.util.List;
 
 public class Renderer2D implements Disposable {
 
+    //Public Variables
+
+    public float cullingExpansion = 10;  //todo: need description.
+    public byte cullingTimeOut = 5;      //for example, 5 means that every 5th frame the culling thread is called.
+
     //Private
 
     private static Renderer2D renderer2D;
@@ -47,11 +52,12 @@ public class Renderer2D implements Disposable {
 
     private RenderMode renderMode;
 
+    private byte cullingCallTime;
+
     //Protected
 
     protected Rectangle cameraView;
     protected CullingThread cullingThread;
-
 
     public enum RenderMode {
 
@@ -63,8 +69,6 @@ public class Renderer2D implements Disposable {
         renderer2D = this;
 
         renderTargets = new ArrayList<RendererObject>();
-        cullingThread = new CullingThread(renderTargets);
-        cullingThread.start();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -72,6 +76,8 @@ public class Renderer2D implements Disposable {
         cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
+        cullingThread = new CullingThread(renderTargets);
+        cullingThread.start();
     }
 
     //Public
@@ -100,24 +106,40 @@ public class Renderer2D implements Disposable {
      */
 
     public void render() {
+        if (cullingCallTime >= cullingTimeOut) {     //need culling?
+            synchronized (cullingThread) {
+                cullingThread.notifyAll();
+            }
+        }
+
         Gdx.gl20.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        cameraView.set(camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
+        cameraView.set(camera.position.x - camera.viewportWidth / 2 - cullingExpansion,
+                camera.position.y - camera.viewportHeight / 2 - cullingExpansion,
+                camera.viewportWidth + cullingExpansion * 2, camera.viewportHeight + cullingExpansion * 2);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
         renderMode = RenderMode.INACTIVE;
 
-        for (RendererObject rend : renderTargets) {
+        if (cullingCallTime >= cullingTimeOut) {              //need wait for culling?
+            synchronizeCullingThread();
 
-            if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {
+            cullingCallTime = 0;
+        } else {
+            cullingCallTime++;
+        }
+
+        for (RendererObject rend : cullingThread.getFinalRenderList()) {
+
+            if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {    //with blending
                 spriteBatch.enableBlending();
 
                 renderMode = RenderMode.ENABLED;
-            } else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
+            } else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {  //without blending
                 spriteBatch.disableBlending();
 
                 renderMode = RenderMode.DISABLED;
@@ -125,7 +147,6 @@ public class Renderer2D implements Disposable {
             rend.render(spriteBatch);
 
         }
-
         spriteBatch.end();
     }
 
@@ -136,7 +157,6 @@ public class Renderer2D implements Disposable {
     @Override
     public void dispose() {
         spriteBatch.dispose();
-        cullingThread.interrupt();
 
         for (RendererObject rend : renderTargets) {
             rend.dispose();
@@ -161,6 +181,16 @@ public class Renderer2D implements Disposable {
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void synchronizeCullingThread() {
+        synchronized (cullingThread) {
+            try {
+                cullingThread.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

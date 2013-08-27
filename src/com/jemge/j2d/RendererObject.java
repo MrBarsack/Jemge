@@ -35,6 +35,4 @@ public interface RendererObject {
 
     boolean needRender();
 
-    void setRenderCache(boolean cache);
-
 }
