@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
-import com.jemge.j2d.renderer.Culling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,6 @@ public class Renderer2D implements Disposable {
     //Protected
 
     protected final Rectangle cameraView;
-    protected final Culling culling;
 
     public enum RenderMode {
 
@@ -69,7 +67,6 @@ public class Renderer2D implements Disposable {
         cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
-        culling = new Culling(renderTargets);
     }
 
     //Public
@@ -108,14 +105,13 @@ public class Renderer2D implements Disposable {
                 camera.position.y - camera.viewportHeight / 2,
                 camera.viewportWidth, camera.viewportHeight);
 
-        culling.run();
-
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
         renderMode = RenderMode.INACTIVE;
 
-        for (RendererObject rend : culling.getFinalRenderList()) {
+        for (RendererObject rend : renderTargets) {
+            if(!rend.needRender()) continue;
 
             if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {    //with blending
                 spriteBatch.enableBlending();
