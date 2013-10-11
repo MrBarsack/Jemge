@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
-import com.jemge.j2d.renderer.CullingThread;
+import com.jemge.j2d.renderer.Culling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class Renderer2D implements Disposable {
     //Protected
 
     protected Rectangle cameraView;
-    protected CullingThread cullingThread;
+    protected Culling cullingThread;
 
     public enum RenderMode {
 
@@ -76,8 +76,7 @@ public class Renderer2D implements Disposable {
         cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
-        cullingThread = new CullingThread(renderTargets);
-        cullingThread.start();
+        cullingThread = new Culling(renderTargets);
     }
 
     //Public
@@ -106,11 +105,6 @@ public class Renderer2D implements Disposable {
      */
 
     public void render() {
-        if (cullingCallTime >= cullingTimeOut) {     //need culling?
-            synchronized (cullingThread) {
-                cullingThread.notifyAll();
-            }
-        }
 
         Gdx.gl20.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -120,18 +114,12 @@ public class Renderer2D implements Disposable {
                 camera.position.y - camera.viewportHeight / 2 - cullingExpansion,
                 camera.viewportWidth + cullingExpansion * 2, camera.viewportHeight + cullingExpansion * 2);
 
+        cullingThread.run();
+
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
         renderMode = RenderMode.INACTIVE;
-
-        if (cullingCallTime >= cullingTimeOut) {              //need wait for culling?
-            synchronizeCullingThread();
-
-            cullingCallTime = 0;
-        } else {
-            cullingCallTime++;
-        }
 
         for (RendererObject rend : cullingThread.getFinalRenderList()) {
 

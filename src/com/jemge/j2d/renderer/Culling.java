@@ -22,47 +22,29 @@ import com.jemge.j2d.RendererObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CullingThread extends Thread implements Runnable {
+public class Culling {
 
     private List<RendererObject> renderList;
-
     protected List<RendererObject> finalRenderList;
 
-
-    public CullingThread(List<RendererObject> rendererObjects) {
-        super("Culling Thread");
+    public Culling(List<RendererObject> rendererObjects) {
         renderList = rendererObjects;
         finalRenderList = new ArrayList<RendererObject>();
 
-        setDaemon(true);
     }
 
-    @Override
     public void run() {
-        while (!isInterrupted()) {
+        finalRenderList.clear();
+
             for (RendererObject rend : renderList) {
                 if (rend.needRender()) {
                     finalRenderList.add(rend);
                 }
             }
-
-
-            synchronized (this) {
-                notifyAll();
-
-                try {
-                    wait();
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                finalRenderList.clear();
-            }
-
-        }
     }
 
-    public synchronized List<RendererObject> getFinalRenderList() {
+
+    public List<RendererObject> getFinalRenderList() {
         return finalRenderList;
     }
 

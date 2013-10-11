@@ -108,7 +108,7 @@ public class JSprite extends Sprite implements RendererObject {
     public JSprite setStatic(boolean set) {
         isStatic = set;
 
-        if (set) {
+        if (set && cachedBound == null) {
             cachedBound = getBoundingRectangle();
         }
 
