@@ -22,29 +22,29 @@ import com.jemge.j2d.RendererObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Culling {
+public final class Culling {
 
-    private List<RendererObject> renderList;
-    protected List<RendererObject> finalRenderList;
+    private final List<RendererObject> renderList;
+    protected final List<RendererObject> finalRenderList;
 
     public Culling(List<RendererObject> rendererObjects) {
         renderList = rendererObjects;
-        finalRenderList = new ArrayList<RendererObject>();
 
+        finalRenderList = new ArrayList<RendererObject>();
     }
 
     public void run() {
         finalRenderList.clear();
 
-            for (RendererObject rend : renderList) {
-                if (rend.needRender()) {
-                    finalRenderList.add(rend);
-                }
+        for (RendererObject rend : renderList) {
+            if (rend.needRender()) {
+                finalRenderList.add(rend);
             }
+        }
     }
 
 
-    public List<RendererObject> getFinalRenderList() {
+    public final List<RendererObject> getFinalRenderList() {
         return finalRenderList;
     }
 

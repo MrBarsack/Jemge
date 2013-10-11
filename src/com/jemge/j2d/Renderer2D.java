@@ -37,27 +37,20 @@ import java.util.List;
 
 public class Renderer2D implements Disposable {
 
-    //Public Variables
-
-    public float cullingExpansion = 10;  //todo: need description.
-    public byte cullingTimeOut = 5;      //for example, 5 means that every 5th frame the culling thread is called.
-
     //Private
 
     private static Renderer2D renderer2D;
 
-    private List<RendererObject> renderTargets;
-    private SpriteBatch spriteBatch;
-    private OrthographicCamera camera;
+    private final List<RendererObject> renderTargets;
+    private final SpriteBatch spriteBatch;
+    private final OrthographicCamera camera;
 
     private RenderMode renderMode;
 
-    private byte cullingCallTime;
-
     //Protected
 
-    protected Rectangle cameraView;
-    protected Culling cullingThread;
+    protected final Rectangle cameraView;
+    protected final Culling culling;
 
     public enum RenderMode {
 
@@ -76,7 +69,7 @@ public class Renderer2D implements Disposable {
         cameraView = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight);
 
         spriteBatch = new SpriteBatch();
-        cullingThread = new Culling(renderTargets);
+        culling = new Culling(renderTargets);
     }
 
     //Public
@@ -98,6 +91,7 @@ public class Renderer2D implements Disposable {
 
     public void remove(RendererObject rendererObject) {
         renderTargets.remove(rendererObject);
+
     }
 
     /**
@@ -110,18 +104,18 @@ public class Renderer2D implements Disposable {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        cameraView.set(camera.position.x - camera.viewportWidth / 2 - cullingExpansion,
-                camera.position.y - camera.viewportHeight / 2 - cullingExpansion,
-                camera.viewportWidth + cullingExpansion * 2, camera.viewportHeight + cullingExpansion * 2);
+        cameraView.set(camera.position.x - camera.viewportWidth / 2,
+                camera.position.y - camera.viewportHeight / 2,
+                camera.viewportWidth, camera.viewportHeight);
 
-        cullingThread.run();
+        culling.run();
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
         renderMode = RenderMode.INACTIVE;
 
-        for (RendererObject rend : cullingThread.getFinalRenderList()) {
+        for (RendererObject rend : culling.getFinalRenderList()) {
 
             if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {    //with blending
                 spriteBatch.enableBlending();
@@ -171,14 +165,5 @@ public class Renderer2D implements Disposable {
         return camera;
     }
 
-    public void synchronizeCullingThread() {
-        synchronized (cullingThread) {
-            try {
-                cullingThread.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 }
