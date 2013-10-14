@@ -17,6 +17,7 @@
 package com.jemge.core;
 
 
+import com.jemge.box2d.Physics2D;
 import com.jemge.j2d.Renderer2D;
 
 /**
@@ -27,15 +28,29 @@ import com.jemge.j2d.Renderer2D;
  */
 
 public class Engine {
+    private final EngineModule[] modules;
 
     public Engine() {
+        modules = new EngineModule[]{
+                new Physics2D()
+        };
+        for(EngineModule module : modules){
+            module.init();
+        }
+
         Jemge.engine = this;
         Jemge.renderer2D = new Renderer2D();
+    }
+
+    public void update() {
+        for(EngineModule module : modules){
+            module.update();
+        }
+
     }
 
     public void dispose() {
 
         Renderer2D.getRenderer2D().dispose();
     }
-
 }

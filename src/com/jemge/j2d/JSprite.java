@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.jemge.core.Jemge;
 
 /**
@@ -32,8 +33,11 @@ import com.jemge.core.Jemge;
 
 public class JSprite extends Sprite implements RendererObject {
 
-    //Private
-    private boolean transparent;
+    //for static jsprite's
+    private boolean isStatic = false;
+
+    private Rectangle cachedBound;
+
 
     public JSprite() {
     }
@@ -67,7 +71,7 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public boolean hasTransparent() {
-        return transparent;
+        return false;
     }
 
 
@@ -77,9 +81,7 @@ public class JSprite extends Sprite implements RendererObject {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        if (needRender()) {
-            super.draw(spriteBatch);
-        }
+        super.draw(spriteBatch);
 
     }
 
@@ -93,9 +95,24 @@ public class JSprite extends Sprite implements RendererObject {
         getTexture().dispose();
     }
 
-    private boolean needRender() {
+    @Override
+    public boolean needRender() {
+        if (isStatic) {
+            return Jemge.renderer2D.cameraView.overlaps(cachedBound);
+        }
+
         //Inside the camera view?
         return Jemge.renderer2D.cameraView.overlaps(getBoundingRectangle());
+    }
+
+    public JSprite setStatic(boolean set) {
+        isStatic = set;
+
+        if (set && cachedBound == null) {
+            cachedBound = getBoundingRectangle();
+        }
+
+        return this;
     }
 
 }

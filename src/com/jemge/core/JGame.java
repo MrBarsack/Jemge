@@ -23,6 +23,7 @@ import com.jemge.j2d.Renderer2D;
 
 /**
  * Use this instead of {@link Game}. Calls the required functions of the engine.
+ *
  * @author MrBarsack
  */
 
@@ -34,6 +35,7 @@ public class JGame extends Game {
 
     @Override
     public void render() {
+        Jemge.engine.update();
         Jemge.renderer2D.render();
     }
 

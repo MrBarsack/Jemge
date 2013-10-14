@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  The renderer class. The rendering is done automatically, you just have to add the objects.
+ * The renderer class. The rendering is done automatically, you just have to add the objects.
  *
- *  @author MrBarsack
- *  @see RendererObject
+ * @author MrBarsack
+ * @see RendererObject
  */
 
 public class Renderer2D implements Disposable {
@@ -40,25 +40,24 @@ public class Renderer2D implements Disposable {
 
     private static Renderer2D renderer2D;
 
-    private List<RendererObject> renderTargets;
-    private SpriteBatch spriteBatch;
-    private OrthographicCamera camera;
+    private final List<RendererObject> renderTargets;
+    private final SpriteBatch spriteBatch;
+    private final OrthographicCamera camera;
 
     private RenderMode renderMode;
 
     //Protected
 
-    protected Rectangle cameraView;
-
+    protected final Rectangle cameraView;
 
     public enum RenderMode {
-
         INACTIVE, ENABLED, DISABLED
     }
 
 
     public Renderer2D() {
         renderer2D = this;
+
         renderTargets = new ArrayList<RendererObject>();
 
         camera = new OrthographicCamera();
@@ -88,6 +87,7 @@ public class Renderer2D implements Disposable {
 
     public void remove(RendererObject rendererObject) {
         renderTargets.remove(rendererObject);
+
     }
 
     /**
@@ -95,11 +95,13 @@ public class Renderer2D implements Disposable {
      */
 
     public void render() {
+
         Gdx.gl20.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        cameraView.set(camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
+        cameraView.setCenter(camera.position.x,
+                camera.position.y);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -107,14 +109,13 @@ public class Renderer2D implements Disposable {
         renderMode = RenderMode.INACTIVE;
 
         for (RendererObject rend : renderTargets) {
+            if(!rend.needRender()) continue;
 
-            if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {
+            if (rend.hasTransparent() && !(renderMode == RenderMode.ENABLED)) {    //with blending
                 spriteBatch.enableBlending();
 
                 renderMode = RenderMode.ENABLED;
-            }
-
-            else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {
+            } else if (!rend.hasTransparent() && !(renderMode == RenderMode.DISABLED)) {  //without blending
                 spriteBatch.disableBlending();
 
                 renderMode = RenderMode.DISABLED;
@@ -122,7 +123,6 @@ public class Renderer2D implements Disposable {
             rend.render(spriteBatch);
 
         }
-
         spriteBatch.end();
     }
 
