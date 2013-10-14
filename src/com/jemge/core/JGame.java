@@ -35,6 +35,7 @@ public class JGame extends Game {
 
     @Override
     public void render() {
+        Jemge.engine.update();
         Jemge.renderer2D.render();
     }
 

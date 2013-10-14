@@ -51,7 +51,6 @@ public class Renderer2D implements Disposable {
     protected final Rectangle cameraView;
 
     public enum RenderMode {
-
         INACTIVE, ENABLED, DISABLED
     }
 
@@ -101,9 +100,8 @@ public class Renderer2D implements Disposable {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        cameraView.set(camera.position.x - camera.viewportWidth / 2,
-                camera.position.y - camera.viewportHeight / 2,
-                camera.viewportWidth, camera.viewportHeight);
+        cameraView.setCenter(camera.position.x,
+                camera.position.y);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
