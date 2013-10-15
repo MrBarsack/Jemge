@@ -1,17 +1,13 @@
 package com.jemge.box2d;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jemge.core.EngineModule;
-import com.jemge.j2d.JSprite;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 
-public class Physics2D implements EngineModule{
+public class Physics2D implements EngineModule {
 
     private static HashMap<String, World> worlds;
 
@@ -27,22 +23,22 @@ public class Physics2D implements EngineModule{
 
     @Override
     public void update() {
-        for(World world : worlds.values()){
+        for (World world : worlds.values()) {
             world.step(timeStep, velocityInteractions, positionInteractions);
         }
     }
 
-    public static World newWorld(String name, World world){
+    public static World newWorld(String name, World world) {
         worlds.put(name, world);
 
         return world;
     }
 
-    public static World getWorld(String name){
+    public static World getWorld(String name) {
         return worlds.get(name);
     }
 
-    public static World getMainWorld(){
+    public static World getMainWorld() {
         return worlds.get("main");
     }
 }

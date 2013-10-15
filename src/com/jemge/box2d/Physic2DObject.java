@@ -1,7 +1,9 @@
 package com.jemge.box2d;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 class Physic2DObject {
     protected final Body body;
@@ -12,7 +14,7 @@ class Physic2DObject {
     private Vector2 position;
 
 
-    public Physic2DObject(float x, float y, float w, float h, BodyDef.BodyType type){
+    public Physic2DObject(float x, float y, float w, float h, BodyDef.BodyType type) {
         this.height = h;
         this.width = w;
 
@@ -24,7 +26,7 @@ class Physic2DObject {
 
     }
 
-    public Physic2DObject setPhysicData(float density, float friction, float restitution){
+    public Physic2DObject setPhysicData(float density, float friction, float restitution) {
         fixture.setDensity(density);
         fixture.setFriction(friction);
         fixture.setRestitution(restitution);
@@ -32,30 +34,30 @@ class Physic2DObject {
         return this;
     }
 
-    public void setBodyType(BodyDef.BodyType type){
+    public void setBodyType(BodyDef.BodyType type) {
         body.setType(type);
     }
 
-    public void applyForce(Vector2 force, boolean wake){
+    public void applyForce(Vector2 force, boolean wake) {
         body.applyForceToCenter(force, wake);
     }
 
-    public void setVelocity(Vector2 velocity){
+    public void setVelocity(Vector2 velocity) {
         body.setLinearVelocity(velocity);
     }
 
-    public Vector2 getPosition(){
+    public Vector2 getPosition() {
         position = body.getPosition();
         position.sub(width / 2, height / 2);
 
         return position;
     }
 
-    public float getHeight(){
+    public float getHeight() {
         return height;
     }
 
-    public float getWidth(){
+    public float getWidth() {
         return width;
     }
 

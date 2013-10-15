@@ -34,7 +34,7 @@ public class Engine {
         modules = new EngineModule[]{
                 new Physics2D()
         };
-        for(EngineModule module : modules){
+        for (EngineModule module : modules) {
             module.init();
         }
 
@@ -43,7 +43,7 @@ public class Engine {
     }
 
     public void update() {
-        for(EngineModule module : modules){
+        for (EngineModule module : modules) {
             module.update();
         }
 
