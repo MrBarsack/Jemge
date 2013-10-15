@@ -1,6 +1,7 @@
 package examples.Box2D;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -10,6 +11,8 @@ import com.jemge.core.JApp;
 import com.jemge.core.JConfig;
 import com.jemge.core.JConfig.Version;
 import com.jemge.core.JGame;
+
+import java.util.Random;
 
 /**
  * Box2d example:
@@ -45,7 +48,8 @@ public class Box2dTest extends JGame {
             Vector3 position = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0); //get mouse- / touch position
             getCamera().unproject(position); //.. unproject it
 
-            new PolygonObject(position.x, position.y, 30, 30, BodyDef.BodyType.DynamicBody); // and create a new box
+            new PolygonObject(position.x, position.y, 30, 30, BodyDef.BodyType.DynamicBody)
+                    .setVelocity(new Vector2(500,   500)); // and create a new box
         }
     }
     
