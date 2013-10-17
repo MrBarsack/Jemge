@@ -125,7 +125,7 @@ public class Renderer2D implements Disposable {
 
     public void render() {
 
-        Gdx.gl20.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
@@ -194,7 +194,7 @@ public class Renderer2D implements Disposable {
      * @return Returns an instance of the camera.
      */
 
-    public Camera getCamera() {
+    public OrthographicCamera getCamera() {
         return camera;
     }
 

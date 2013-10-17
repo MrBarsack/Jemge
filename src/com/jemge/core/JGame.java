@@ -19,6 +19,7 @@ package com.jemge.core;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.jemge.j2d.Renderer2D;
 
 /**
@@ -44,7 +45,7 @@ public class JGame extends Game {
         Jemge.engine.dispose();
     }
 
-    public Camera getCamera() {
+    public OrthographicCamera getCamera() {
         return Renderer2D.getRenderer2D().getCamera();
     }
 

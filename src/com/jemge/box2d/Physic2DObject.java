@@ -34,6 +34,10 @@ class Physic2DObject {
         return this;
     }
 
+    public Body getBody(){
+        return body;
+    }
+
     public void setBodyType(BodyDef.BodyType type) {
         body.setType(type);
     }
@@ -47,7 +51,7 @@ class Physic2DObject {
     }
 
     public Vector2 getPosition() {
-        position = body.getPosition();
+        position = fixture.getBody().getPosition();
         position.sub(width / 2, height / 2);
 
         return position;
